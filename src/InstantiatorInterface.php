@@ -41,7 +41,7 @@ interface InstantiatorInterface
      *
      * @return callable
      */
-    public function createCallable($string, $method = 'handle');
+    public function createCallable($string, $method = '__invoke');
     
     /**
      * Resolve the given type from the container.
