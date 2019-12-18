@@ -1,0 +1,35 @@
+{
+  "name": "b2pweb/bdf-instantiator",
+  "description": "Bdf Instantiator component",
+  "type": "library",
+  "keywords": ["instantiate", "pattern", "design pattern"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Sébastien Tanneux"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Bdf\\Instantiator\\": "src"
+    }
+  },
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=7.1",
+    "psr/container": "~1.0",
+    "symfony/http-kernel": "~4.2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~8.0",
+    "league/container": "~3.0"
+  },
+  "scripts": {
+    "tests": "phpunit"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0-dev"
+    }
+  }
+}
