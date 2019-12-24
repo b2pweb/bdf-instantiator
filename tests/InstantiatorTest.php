@@ -316,7 +316,11 @@ class InstantiatorTest extends TestCase
     public function test_make_throws_require_dependencies()
     {
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessageMatches('/requires that you provide a value for/');
+        if (method_exists($this, 'expectExceptionMessageMatches')) {
+            $this->expectExceptionMessageMatches('/requires that you provide a value for/');
+        } else {
+            $this->expectExceptionMessageRegExp('/requires that you provide a value for/');
+        }
 
         $this->instantiator->make(InstanciatorDependencyObject::class);
     }
