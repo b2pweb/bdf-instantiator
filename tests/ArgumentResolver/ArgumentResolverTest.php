@@ -20,7 +20,7 @@ class ArgumentResolverTest extends TestCase
     public function test_not_found_from_string()
     {
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Callable "var_dump" requires that you provide a value for the "$vars" argument.');
+        $this->expectExceptionMessageMatches('/Callable "var_dump" requires that you provide a value for the "\$[a-z]+" argument./');
 
         $resolver = new ArgumentResolver();
         $resolver->getArguments('var_dump');

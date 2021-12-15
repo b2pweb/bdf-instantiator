@@ -35,7 +35,7 @@ final class ArgumentMetadataFactory implements ArgumentMetadataFactoryInterface
                 $param->isDefaultValueAvailable(),
                 $param->isDefaultValueAvailable() ? $param->getDefaultValue() : null,
                 $param->allowsNull(),
-                $param->getClass() !== null
+                $param->getType() !== null
             );
         }
 

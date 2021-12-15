@@ -2,7 +2,7 @@
 
 A basic object instantiator.
 
-[![Build Status](https://travis-ci.org/b2pweb/bdf-instantiator.svg?branch=master)](https://travis-ci.org/b2pweb/bdf-instantiator)
+[![Build Status](https://app.travis-ci.com/b2pweb/bdf-instantiator.svg?branch=master)](https://app.travis-ci.com/b2pweb/bdf-instantiator)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/b2pweb/bdf-instantiator/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/b2pweb/bdf-instantiator/?branch=master)
 [![Packagist Version](https://img.shields.io/packagist/v/b2pweb/bdf-instantiator.svg)](https://packagist.org/packages/b2pweb/bdf-instantiator)
 [![Total Downloads](https://img.shields.io/packagist/dt/b2pweb/bdf-instantiator.svg)](https://packagist.org/packages/b2pweb/bdf-instantiator)
