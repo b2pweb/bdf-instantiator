@@ -2,9 +2,14 @@
 
 namespace Bdf\Instantiator\ArgumentResolver;
 
+use _files\A;
+use _files\Php8Syntax;
 use Bdf\Instantiator\ArgumentResolver\ValueResolver\DefaultValue;
 use Bdf\Instantiator\ArgumentResolver\ValueResolver\NamedValue;
 use Bdf\Instantiator\ArgumentResolver\ValueResolver\PositionedValue;
+use Bdf\Instantiator\ArgumentResolver\ValueResolver\ServiceValue;
+use Bdf\Instantiator\Instantiator;
+use League\Container\Container;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -93,6 +98,30 @@ class ArgumentResolverTest extends TestCase
         $args = $resolver->getArguments([new Foo, 'variadic'], ['args' => ['foo', 'bar']]);
 
         $this->assertSame(['foo', 'bar'], $args);
+    }
+
+    /**
+     * @requires PHP 8
+     */
+    public function test_ignore_typed_arguments_with_union_or_builtin_types()
+    {
+        require_once __DIR__ . '/../_files/Php8Syntax.php';
+
+        $container = new Container();
+        $instantiator = new Instantiator($container);
+
+        $resolver = new ArgumentResolver(null, [
+            new NamedValue(),
+            new PositionedValue(),
+            new ServiceValue($instantiator),
+            new DefaultValue(),
+        ]);
+
+        $a = new A();
+        $this->assertSame([$a], $resolver->getArguments([new Php8Syntax(), 'withUnion'], [$a]));
+
+        $args = ['foo', new class { public function __invoke() {} }];
+        $this->assertSame($args, $resolver->getArguments([new Php8Syntax(), 'withBuiltinType'], $args));
     }
 }
 

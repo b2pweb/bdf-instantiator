@@ -3,7 +3,11 @@
 namespace Bdf\Instantiator\ArgumentResolver\ArgumentMetadata;
 
 use Bdf\Instantiator\Exception\InvalidCallableException;
+use ReflectionException;
+use ReflectionFunctionAbstract;
+use ReflectionNamedType;
 use ReflectionParameter;
+use ReflectionType;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadataFactoryInterface;
 
 /**
@@ -23,19 +27,21 @@ final class ArgumentMetadataFactory implements ArgumentMetadataFactoryInterface
 
         try {
             $reflection = $this->getReflection($callable);
-        } catch(\ReflectionException $exception) {
+        } catch(ReflectionException $exception) {
             throw new InvalidCallableException($exception->getMessage(), $exception->getCode(), $exception);
         }
 
         foreach ($reflection->getParameters() as $param) {
+            $type = $param->getType();
+
             $arguments[] = new ArgumentMetadata(
                 $param->getName(),
-                $this->getType($param, $reflection),
+                $this->getType($type, $reflection),
                 $param->isVariadic(),
                 $param->isDefaultValueAvailable(),
                 $param->isDefaultValueAvailable() ? $param->getDefaultValue() : null,
                 $param->allowsNull(),
-                $param->getType() !== null
+                $type instanceof ReflectionNamedType && !$type->isBuiltin()
             );
         }
 
@@ -47,9 +53,9 @@ final class ArgumentMetadataFactory implements ArgumentMetadataFactoryInterface
      *
      * @param callable|object $callable
      *
-     * @return \ReflectionFunctionAbstract
+     * @return ReflectionFunctionAbstract
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private function getReflection($callable)
     {
@@ -67,26 +73,26 @@ final class ArgumentMetadataFactory implements ArgumentMetadataFactoryInterface
     /**
      * Returns an associated type to the given parameter if available.
      *
-     * @param ReflectionParameter $parameter
-     * @param \ReflectionFunctionAbstract $function
+     * @param ReflectionType|null $type
+     * @param ReflectionFunctionAbstract $function
      *
      * @return null|string
      */
-    private function getType(ReflectionParameter $parameter, \ReflectionFunctionAbstract $function)
+    private function getType(?ReflectionType $type, ReflectionFunctionAbstract $function)
     {
-        if (!$type = $parameter->getType()) {
+        if (!$type instanceof ReflectionNamedType) {
             return null;
         }
 
-        $name = $type->getName();
+        switch ($name = $type->getName()) {
+            case 'self':
+                return $function->getDeclaringClass()->name;
 
-        if ('self' === $name) {
-            return $function->getDeclaringClass()->name;
-        }
-        if ('parent' === $name) {
-            return $function->getDeclaringClass()->getParentClass()->name;
-        }
+            case 'parent':
+                return $function->getDeclaringClass()->getParentClass()->name;
 
-        return $name;
+            default:
+                return $name;
+        }
     }
 }
