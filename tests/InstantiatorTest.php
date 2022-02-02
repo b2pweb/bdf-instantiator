@@ -331,7 +331,11 @@ class InstantiatorTest extends TestCase
     public function test_make_invalid_class()
     {
         $this->expectException(ClassNotExistsException::class);
-        $this->expectExceptionMessageMatches('/Class "?Bdf\\\\Instantiator\\\\Unknown"? does not exist/');
+        if (method_exists($this, 'expectExceptionMessageMatches')) {
+            $this->expectExceptionMessageMatches('/Class "?Bdf\\\\Instantiator\\\\Unknown"? does not exist/');
+        } else {
+            $this->expectExceptionMessageRegExp('/Class "?Bdf\\\\Instantiator\\\\Unknown"? does not exist/');
+        }
 
         $this->instantiator->make(Unknown::class);
     }
