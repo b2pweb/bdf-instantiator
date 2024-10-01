@@ -21,7 +21,7 @@ final class ArgumentMetadataFactory implements ArgumentMetadataFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createArgumentMetadata($callable): array
+    public function createArgumentMetadata($callable, $reflector = null): array
     {
         $arguments = [];
 
