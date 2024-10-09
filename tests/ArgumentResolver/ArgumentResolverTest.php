@@ -9,7 +9,7 @@ use Bdf\Instantiator\ArgumentResolver\ValueResolver\NamedValue;
 use Bdf\Instantiator\ArgumentResolver\ValueResolver\PositionedValue;
 use Bdf\Instantiator\ArgumentResolver\ValueResolver\ServiceValue;
 use Bdf\Instantiator\Instantiator;
-use League\Container\Container;
+use DI\ContainerBuilder;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -111,7 +111,7 @@ class ArgumentResolverTest extends TestCase
     {
         require_once __DIR__ . '/../_files/Php8Syntax.php';
 
-        $container = new Container();
+        $container = (new ContainerBuilder())->build();
         $instantiator = new Instantiator($container);
 
         $resolver = new ArgumentResolver(null, [

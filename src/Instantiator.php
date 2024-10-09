@@ -41,7 +41,7 @@ class Instantiator implements InstantiatorInterface
      * The resolver for argument resolver
      * Should return ArgumentResolverInterface
      *
-     * @var Closure
+     * @var Closure|null
      */
     private $argumentsResolver;
 
@@ -51,7 +51,7 @@ class Instantiator implements InstantiatorInterface
      * @param ContainerInterface $container
      * @param null|Closure $argumentsResolver
      */
-    public function __construct(ContainerInterface $container, Closure $argumentsResolver = null)
+    public function __construct(ContainerInterface $container, ?Closure $argumentsResolver = null)
     {
         $this->container = $container;
         $this->argumentsResolver = $argumentsResolver;

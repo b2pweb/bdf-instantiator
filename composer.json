@@ -16,13 +16,13 @@
   },
   "minimum-stability": "dev",
   "require": {
-    "php": "~7.2 | ~8.0.0 | ~8.1.0 | ~8.2.0 | ~8.3.0",
+    "php": "~7.2 | ~8.0.0 | ~8.1.0 | ~8.2.0 | ~8.3.0 | ~8.4.0",
     "psr/container": "~1.0|~2.0",
     "symfony/http-kernel": "~4.2|~5.0|~6.0|~7.0"
   },
   "require-dev": {
     "phpunit/phpunit": "~7.0|~8.0",
-    "league/container": "~3.0|~4.0"
+    "php-di/php-di": "~6.0|~7.0"
   },
   "scripts": {
     "tests": "phpunit",
@@ -34,3 +34,4 @@
     }
   }
 }
+

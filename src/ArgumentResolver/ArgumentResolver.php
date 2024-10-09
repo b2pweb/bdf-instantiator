@@ -29,10 +29,10 @@ final class ArgumentResolver implements ArgumentResolverInterface
     /**
      * ArgumentResolver constructor.
      *
-     * @param ArgumentMetadataFactoryInterface $metadataFactory
+     * @param ArgumentMetadataFactoryInterface|null $metadataFactory
      * @param ValueResolverInterface[] $resolvers
      */
-    public function __construct(ArgumentMetadataFactoryInterface $metadataFactory = null, array $resolvers = [])
+    public function __construct(?ArgumentMetadataFactoryInterface $metadataFactory = null, array $resolvers = [])
     {
         $this->metadataFactory = $metadataFactory ?: new ArgumentMetadataFactory();
         $this->resolvers = $resolvers;

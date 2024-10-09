@@ -5,7 +5,8 @@ namespace Bdf\Instantiator;
 use Bdf\Instantiator\ArgumentResolver\ArgumentResolver;
 use Bdf\Instantiator\ArgumentResolver\ArgumentResolverInterface;
 use Bdf\Instantiator\Exception\ClassNotExistsException;
-use League\Container\Container;
+use DI\Container;
+use DI\ContainerBuilder;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -30,7 +31,10 @@ class InstantiatorTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->container = new Container();
+        $this->container = (new ContainerBuilder())
+            ->useAutowiring(false)
+            ->build()
+        ;
         $this->instantiator = new Instantiator($this->container);
     }
     
@@ -77,7 +81,7 @@ class InstantiatorTest extends TestCase
      */
     public function test_at_synthax()
     {
-        $this->container->add('test', new stdClass());
+        $this->container->set('test', new stdClass());
 
         $resolved = $this->instantiator->createCallable('test@method');
 
@@ -90,7 +94,7 @@ class InstantiatorTest extends TestCase
      */
     public function test_without_method()
     {
-        $this->container->add('test', new stdClass());
+        $this->container->set('test', new stdClass());
         
         $resolved = $this->instantiator->createCallable('test');
         
@@ -103,8 +107,8 @@ class InstantiatorTest extends TestCase
      */
     public function test_with_arguments()
     {
-        $this->container->add('test1', 1);
-        $this->container->add('test2', 2);
+        $this->container->set('test1', 1);
+        $this->container->set('test2', 2);
         
         $resolved = $this->instantiator->createCallable(TestInstanciatorListener::class.'[test1, test2]@method');
         
@@ -116,7 +120,7 @@ class InstantiatorTest extends TestCase
      */
     public function test_command()
     {
-        $this->container->add('class', $object = new stdClass);
+        $this->container->set('class', $object = new stdClass);
         
         $resolved = $this->instantiator->createCallable(TestInstanciatorMakeCommand::class.'[class]@method');
         
@@ -204,7 +208,7 @@ class InstantiatorTest extends TestCase
      */
     public function test_make_existing_item()
     {
-        $this->container->add('item', ['test']);
+        $this->container->set('item', ['test']);
 
         $this->assertSame(['test'], $this->instantiator->make('item'));
     }
@@ -214,7 +218,7 @@ class InstantiatorTest extends TestCase
      */
     public function test_make_existing_object()
     {
-        $this->container->add('object', new InstanciatorDependencyObject('test'));
+        $this->container->set('object', new InstanciatorDependencyObject('test'));
 
         $this->assertSame('test', $this->instantiator->make('object')->value);
     }
@@ -232,7 +236,7 @@ class InstantiatorTest extends TestCase
      */
     public function test_make_object_by_key()
     {
-        $this->container->add(InstanciatorNullObject::class);
+        $this->container->set(InstanciatorNullObject::class, new InstanciatorNullObject());
 
         $this->assertInstanceOf(InstanciatorNullObject::class, $this->instantiator->make(InstanciatorNullObject::class));
     }
@@ -242,7 +246,7 @@ class InstantiatorTest extends TestCase
      */
     public function test_make_object_by_alias()
     {
-        $this->container->add('object', InstanciatorNullObject::class);
+        $this->container->set('object', InstanciatorNullObject::class);
 
         $this->assertInstanceOf(InstanciatorNullObject::class, $this->instantiator->make('object'));
     }
@@ -302,7 +306,7 @@ class InstantiatorTest extends TestCase
      */
     public function test_make_object_with_not_given_dependencies_object_by_key()
     {
-        $this->container->add(InstanciatorSelfDependencyObjectInterface::class, InstanciatorSelfDependencyObject::class);
+        $this->container->set(InstanciatorSelfDependencyObjectInterface::class, InstanciatorSelfDependencyObject::class);
 
         $result = $this->instantiator->make(InstanciatorSelfMakeObject::class);
 
@@ -392,7 +396,7 @@ class InstanciatorDependencyObject
 class InstanciatorMakeObject
 {
     public $object;
-    public function __construct(InstanciatorDependencyObject $object = null)
+    public function __construct(?InstanciatorDependencyObject $object = null)
     {
         $this->object = $object;
     }
