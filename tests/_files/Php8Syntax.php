@@ -13,6 +13,11 @@ class Php8Syntax
     {
 
     }
+
+    public function withAttribute(#[MyAttribute(42)] $param)
+    {
+
+    }
 }
 
 class A
@@ -23,4 +28,12 @@ class A
 class B
 {
 
+}
+
+#[\Attribute(\Attribute::TARGET_PARAMETER)]
+class MyAttribute
+{
+    public function __construct(
+        public int $value,
+    ) {}
 }

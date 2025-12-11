@@ -6,9 +6,10 @@ use Bdf\Instantiator\Exception\InvalidCallableException;
 use ReflectionException;
 use ReflectionFunctionAbstract;
 use ReflectionNamedType;
-use ReflectionParameter;
 use ReflectionType;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadataFactoryInterface;
+
+use function method_exists;
 
 /**
  * Custom factory to manage additionnal metadata.
@@ -34,6 +35,14 @@ final class ArgumentMetadataFactory implements ArgumentMetadataFactoryInterface
         foreach ($reflection->getParameters() as $param) {
             $type = $param->getType();
 
+            $attributes = [];
+
+            if (method_exists($param, 'getAttributes')) {
+                foreach ($param->getAttributes() as $attribute) {
+                    $attributes[] = $attribute->newInstance();
+                }
+            }
+
             $arguments[] = new ArgumentMetadata(
                 $param->getName(),
                 $this->getType($type, $reflection),
@@ -41,7 +50,8 @@ final class ArgumentMetadataFactory implements ArgumentMetadataFactoryInterface
                 $param->isDefaultValueAvailable(),
                 $param->isDefaultValueAvailable() ? $param->getDefaultValue() : null,
                 $param->allowsNull(),
-                $type instanceof ReflectionNamedType && !$type->isBuiltin()
+                $type instanceof ReflectionNamedType && !$type->isBuiltin(),
+                $attributes
             );
         }
 
