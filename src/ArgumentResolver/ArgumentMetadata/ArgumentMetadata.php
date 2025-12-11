@@ -24,8 +24,9 @@ class ArgumentMetadata extends BaseArgumentMetadata
      * @param mixed $defaultValue
      * @param bool $isNullable
      * @param bool $isClass
+     * @param object[] $attributes
      */
-    public function __construct(string $name, ?string $type, bool $isVariadic, bool $hasDefaultValue, $defaultValue, bool $isNullable = false, bool $isClass = false)
+    public function __construct(string $name, ?string $type, bool $isVariadic, bool $hasDefaultValue, $defaultValue, bool $isNullable = false, bool $isClass = false, array $attributes = [])
     {
         parent::__construct(
             $name,
@@ -33,7 +34,8 @@ class ArgumentMetadata extends BaseArgumentMetadata
             $isVariadic,
             $hasDefaultValue,
             $defaultValue,
-            $isNullable
+            $isNullable,
+            $attributes
         );
 
         $this->isClass = $isClass;

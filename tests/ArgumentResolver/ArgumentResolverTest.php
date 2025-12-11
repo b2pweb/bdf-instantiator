@@ -3,6 +3,7 @@
 namespace Bdf\Instantiator\ArgumentResolver;
 
 use _files\A;
+use _files\MyAttribute;
 use _files\Php8Syntax;
 use Bdf\Instantiator\ArgumentResolver\ValueResolver\DefaultValue;
 use Bdf\Instantiator\ArgumentResolver\ValueResolver\NamedValue;
@@ -126,6 +127,36 @@ class ArgumentResolverTest extends TestCase
 
         $args = ['foo', new class { public function __invoke() {} }];
         $this->assertSame($args, $resolver->getArguments([new Php8Syntax(), 'withBuiltinType'], $args));
+    }
+
+    /**
+     * @requires PHP 8
+     */
+    public function test_handle_php8_attributes()
+    {
+        require_once __DIR__ . '/../_files/Php8Syntax.php';
+
+        $container = (new ContainerBuilder())->build();
+        $instantiator = new Instantiator($container);
+
+        $resolver = new ArgumentResolver(null, [
+            new class implements ValueResolverInterface {
+                public function supports($metadata, $i, $parameters)
+                {
+                    return $metadata->getAttributes(MyAttribute::class) !== [];
+                }
+
+                public function resolve($metadata, $i, &$parameters)
+                {
+                    foreach ($metadata->getAttributes(MyAttribute::class) as $attribute) {
+                        yield $attribute->value;
+                    }
+                }
+            },
+            new DefaultValue(),
+        ]);
+
+        $this->assertSame([42], $resolver->getArguments([new Php8Syntax(), 'withAttribute']));
     }
 }
 
